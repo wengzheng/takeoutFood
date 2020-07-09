@@ -4,9 +4,9 @@ public class BeanSystemUser {
 	private String SystemUserid;
 	private String pwd;
 	private String SystemUsername;
-	
+	private int stype;
+	private int systemNUM;
 	public String getSystemUserid() {
-		// TODO Auto-generated method stub
 		return SystemUserid;
 	}
 	public void setSystemUserid(String SystemUserid) {
@@ -23,6 +23,18 @@ public class BeanSystemUser {
 	}
 	public void setSystemUsername(String systemUsername) {
 		SystemUsername = systemUsername;
+	}
+	public int getStype() {
+		return stype;
+	}
+	public void setStype(int stype) {
+		this.stype = stype;
+	}
+	public int getSystemNUM() {
+		return systemNUM;
+	}
+	public void setSystemNUM(int systemNUM) {
+		this.systemNUM = systemNUM;
 	}
 	
 }

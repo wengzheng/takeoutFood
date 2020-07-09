@@ -3,7 +3,7 @@ package cn.edu.zucc.takeoutfood.util;
 import java.sql.Connection;
 
 public class DBUtil {
-	private static final String jdbcUrl="jdbc:mysql://localhost:3306/booklib";
+	private static final String jdbcUrl="jdbc:mysql://localhost:3306/takeoutfood";
 	private static final String dbUser="root";
 	private static final String dbPwd="oracle";
 	static{

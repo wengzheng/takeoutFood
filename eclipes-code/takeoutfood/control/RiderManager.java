@@ -5,31 +5,28 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.edu.zucc.takeoutfood.model.BeanRider;
+import cn.edu.zucc.takeoutfood.model.BeanShop;
 import cn.edu.zucc.takeoutfood.util.BaseException;
 import cn.edu.zucc.takeoutfood.util.BusinessException;
 import cn.edu.zucc.takeoutfood.util.DBUtil;
 import cn.edu.zucc.takeoutfood.util.DbException;
-import cn.edu.zucc.takeoutfood.model.BeanAdministrator;
-import cn.edu.zucc.takeoutfood.model.BeanSystemUser;
-import cn.edu.zucc.takeoutfood.model.BeanUser;
 
-
-public class UserManager {
-
-	public List<BeanUser> loadAllUsers(boolean withnotdel) throws BaseException{
+public class RiderManager {
+	public List<BeanRider> loadAllRiders(boolean withnotdel) throws BaseException{
 		Connection conn=null;
-		List<BeanUser> result=new ArrayList<BeanUser>();
+		List<BeanRider> result=new ArrayList<BeanRider>();
 		try {
 			conn=DBUtil.getConnection();
-			String sql="select useraccount,username,userpwd from users";
+			String sql="select rideraccount,ridername,riderpwd from rider";
 			java.sql.Statement st=conn.createStatement();
 			java.sql.ResultSet rs=st.executeQuery(sql);
 			while(rs.next()) {
-				BeanUser bu=new BeanUser();
-				bu.setUserid(rs.getString(1));
-				bu.setUsername(rs.getString(2));
-				bu.setUpwd(rs.getString(3));
-				result.add(bu);
+				BeanRider bs=new BeanRider();
+				bs.setRiderid(rs.getString(1));
+				bs.setRidername(rs.getString(2));
+				bs.setRiderpwd(rs.getString(3));
+				result.add(bs);
 			}
 			rs.close();
 			st.close();
@@ -50,13 +47,13 @@ public class UserManager {
 	}
 
 
-	public void resetUserPwd(String userid) throws BaseException{
+	public void resetRiderPwd(String riderid) throws BaseException{
 		Connection conn=null;
 		try {
 			conn=DBUtil.getConnection();
-			String sql="select userID from users where useraccount=?";
+			String sql="select riderID from rider where rideraccount=?";
 			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
-			pst.setString(1,userid);
+			pst.setString(1,riderid);
 			java.sql.ResultSet rs=pst.executeQuery();
 			int n;
 			if(rs.next()) 
@@ -65,9 +62,9 @@ public class UserManager {
 				throw new BusinessException("登陆账号不存在");
 			rs.close();
 			pst.close();
-			sql="UPDATE users SET userpwd=? where userID=?";
+			sql="UPDATE rider SET riderpwd=? where riderID=?";
 			pst=conn.prepareStatement(sql);
-			pst.setString(1, "000000");
+			pst.setString(1, "333333");
 			pst.setInt(2, n);
 			pst.execute();
 			pst.close();
@@ -87,13 +84,13 @@ public class UserManager {
 		
 	}
 
-	public void deleteUser(String userid) throws BaseException{
+	public void deleteRider(String riderid) throws BaseException{
 		Connection conn=null;
 		try {
 			conn=DBUtil.getConnection();
-			String sql="SELECT userID FROM users WHERE useraccount=?";
+			String sql="SELECT riderID FROM rider WHERE rideraccount=?";
 			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
-			pst.setString(1,userid);
+			pst.setString(1,riderid);
 			java.sql.ResultSet rs=pst.executeQuery();
 			int n;
 			if(rs.next()) { 
@@ -102,7 +99,7 @@ public class UserManager {
 				throw new BusinessException("登陆账号不存在");
 			rs.close();
 			pst.close();
-			sql="delete from users where userID=? ";
+			sql="delete from rider where riderID=? ";
 			pst=conn.prepareStatement(sql);
 			pst.setInt(1,n);
 			pst.execute();
@@ -124,20 +121,20 @@ public class UserManager {
 		
 	}
 
-	public BeanUser loadUser(String userid)throws BaseException{
-		BeanUser bu=new BeanUser();
+	public BeanRider loadRider(String riderid)throws BaseException{
+		BeanRider bu=new BeanRider();
 		Connection conn=null;
 		try {
 			conn=DBUtil.getConnection();
-			String sql="SELECT userID,useraccount,username,userpwd FROM users WHERE useraccount=?";
+			String sql="SELECT riderID,rideraccount,ridername,riderpwd FROM rider WHERE rideraccount=?";
 			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
-			pst.setString(1,userid);
+			pst.setString(1,riderid);
 			java.sql.ResultSet rs=pst.executeQuery();
 			if(rs.next()) {
-				bu.setpNUM(rs.getInt(1));
-				bu.setUserid(rs.getString(2));
-				bu.setUsername(rs.getString(3));
-				bu.setUpwd(rs.getString(4));
+				bu.setRiderID(rs.getInt(1));
+				bu.setRiderid(rs.getString(2));
+				bu.setRidername(rs.getString(3));
+				bu.setRiderpwd(rs.getString(4));
 			}	
 			else
 				throw new BusinessException("登陆账号不存在");
@@ -159,34 +156,26 @@ public class UserManager {
 	}
 
 
-	public void createUser(BeanUser user) throws BaseException{
+	public void createRider(BeanRider rider) throws BaseException{
 		Connection conn=null;
-		if ("".equals(user.getUserid())) {
+		if ("".equals(rider.getRiderid())) {
 			throw new BusinessException("账号为空");}
-		if("".equals(user.getUsername())) {
+		if("".equals(rider.getRidername())) {
 			throw new BusinessException("用户名为空");}
-		if("".equals(user.getUsex())) {
-			throw new BusinessException("性别为空");}
-		if("".equals(user.getUpwd())) {	
+		if("".equals(rider.getRiderpwd())) {	
 			throw new BusinessException("密码为空");}
-		if("".equals(user.getPhone())) {
-			throw new BusinessException("电话为空");}
-		if("".equals(user.getEmail())) {	
-			throw new BusinessException("邮箱为空");}
-		if("".equals(user.getAddress())) {
-			throw new BusinessException("地址为空");}
 		try {
 			conn=DBUtil.getConnection();
-			String sql="select useraccount from users where useraccount=?";
+			String sql="select rideraccount from rider where rideraccount=?";
 			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
-			pst.setString(1, user.getUserid());
+			pst.setString(1, rider.getRiderid());
 			java.sql.ResultSet rs=pst.executeQuery();
 			while(rs.next()) {
 				rs.close();
 				pst.close();
 				throw new BusinessException("用户已存在");
 			}
-			sql="select max(userID) from users";
+			sql="select max(riderID) from rider";
 			pst=conn.prepareStatement(sql);
 			rs=pst.executeQuery();
 			int n = 0;
@@ -194,18 +183,15 @@ public class UserManager {
 				n=rs.getInt(1);
 			rs.close();
 			pst.close();
-			sql="INSERT users(userID,adminID,useraccount,username,usex,userpwd,phone,email,address,registertime) VALUES (?,?,?,?,?,?,?,?,?,?)";
+			sql="INSERT rider(riderID,adminID,rideraccount,ridername,riderpwd,rstarttime,rIdtpye) VALUES (?,?,?,?,?,?,?)";
 			pst=conn.prepareStatement(sql);
 			pst.setInt(1,(n+1));
 			pst.setInt(2, SystemUserManager.currentUser.getSystemNUM());
-			pst.setString(3, user.getUserid());
-			pst.setString(4, user.getUsername());
-			pst.setString(5, user.getUsex());
-			pst.setString(6, user.getUpwd());
-			pst.setString(7, user.getPhone());
-			pst.setString(8, user.getEmail());
-			pst.setString(9, user.getAddress());
-			pst.setTimestamp(10, new java.sql.Timestamp(System.currentTimeMillis()));
+			pst.setString(3, rider.getRiderid());
+			pst.setString(4, rider.getRidername());
+			pst.setString(5, rider.getRiderpwd());
+			pst.setTimestamp(6, new java.sql.Timestamp(System.currentTimeMillis()));
+			pst.setString(7, rider.getrIdtpye());
 			pst.execute();
 			pst.close();
 		}catch(SQLException ex) {

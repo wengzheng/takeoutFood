@@ -1,11 +1,10 @@
 package cn.edu.zucc.takeoutfood.model;
 
-import java.util.List;
-
 public class BeanAdministrator {
 	private String adminid;
 	private String adminname;
-	private String pwd;
+	private String apwd;
+	private int aNUM;
 	public String getAdminid() {
 		return adminid;
 	}
@@ -18,11 +17,17 @@ public class BeanAdministrator {
 	public void setAdminname(String adminname) {
 		this.adminname = adminname;
 	}
-	public String getPwd() {
-		return pwd;
+	public String getAPwd() {
+		return apwd;
 	}
-	public void setPwd(String pwd) {
-		this.pwd = pwd;
+	public void setAPwd(String pwd) {
+		this.apwd = pwd;
+	}
+	public int getaNUM() {
+		return aNUM;
+	}
+	public void setaNUM(int aNUM) {
+		this.aNUM = aNUM;
 	}
 	
 

@@ -13,35 +13,36 @@ import java.awt.event.WindowEvent;
 import java.util.List;
 
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-
-import cn.edu.zucc.takeoutfood.control.UserManager;
-import cn.edu.zucc.takeoutfood.model.BeanUser;
-import cn.edu.zucc.takeoutfood.ui.FrmUserManager_AddUser;
+import cn.edu.zucc.takeoutfood.control.RiderManager;
+import cn.edu.zucc.takeoutfood.control.ShopManager;
+import cn.edu.zucc.takeoutfood.model.BeanRider;
+import cn.edu.zucc.takeoutfood.model.BeanShop;
 import cn.edu.zucc.takeoutfood.util.BaseException;
 
-public class FrmUserManager extends JDialog implements ActionListener {
+public class FrmRiderManager  extends JDialog implements ActionListener {
 	private JPanel toolBar = new JPanel();
-	private Button btnAdd = new Button("添加用户");
+	private Button btnAdd = new Button("添加骑手");
 	private Button btnResetPwd = new Button("重置密码");
-	private Button btnDelete = new Button("删除用户");
+	private Button btnDelete = new Button("删除骑手");
 	private Object tblTitle[]={"序号","账号","姓名"};
 	private Object tblData[][];
 	DefaultTableModel tablmod=new DefaultTableModel();
 	private JTable userTable=new JTable(tablmod);
-	private void reloadUserTable(){
+	private void reloadRiderTable(){
 		try {
-			List<BeanUser> users=(new UserManager()).loadAllUsers(false);
+			List<BeanRider> users=(new RiderManager()).loadAllRiders(false);
 			tblData =new Object[users.size()][3];
 			for(int i=0;i<users.size();i++){
 				tblData[i][0]=i+1;
-				tblData[i][1]=users.get(i).getUserid();
-				tblData[i][2]=users.get(i).getUsername();
+				tblData[i][1]=users.get(i).getRiderid();
+				tblData[i][2]=users.get(i).getRidername();
 			}
 			tablmod.setDataVector(tblData,tblTitle);
 			this.userTable.validate();
@@ -51,7 +52,7 @@ public class FrmUserManager extends JDialog implements ActionListener {
 		}
 	}
 	
-	public FrmUserManager(Frame f, String s, boolean b) {
+	public FrmRiderManager(Frame f, String s, boolean b) {
 		super(f, s, b);
 		toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
 		toolBar.add(btnAdd);
@@ -59,7 +60,7 @@ public class FrmUserManager extends JDialog implements ActionListener {
 		toolBar.add(this.btnDelete);
 		this.getContentPane().add(toolBar, BorderLayout.NORTH);
 		//提取现有数据
-		this.reloadUserTable();
+		this.reloadRiderTable();
 		this.getContentPane().add(new JScrollPane(this.userTable), BorderLayout.CENTER);
 		
 		// 屏幕居中显示
@@ -84,10 +85,10 @@ public class FrmUserManager extends JDialog implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getSource()==this.btnAdd){
-			FrmUserManager_AddUser dlg=new FrmUserManager_AddUser(this,"添加账号",true);
+			FrmRiderManager_AddRider dlg=new FrmRiderManager_AddRider(this,"添加账号",true);
 			dlg.setVisible(true);
-			if(dlg.getUser()!=null){//刷新表格
-				this.reloadUserTable();
+			if(dlg.getRider()!=null){//刷新表格
+				this.reloadRiderTable();
 			}
 		}
 		else if(e.getSource()==this.btnResetPwd){
@@ -97,9 +98,9 @@ public class FrmUserManager extends JDialog implements ActionListener {
 				return;
 			}
 			if(JOptionPane.showConfirmDialog(this,"确定重置密码吗？","确认",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
-				String userid=this.tblData[i][1].toString();
+				String Riderid=this.tblData[i][1].toString();
 				try {
-					(new UserManager()).resetUserPwd(userid);
+					(new RiderManager()).resetRiderPwd(Riderid);
 					JOptionPane.showMessageDialog(null,  "密码重置完成","提示",JOptionPane.INFORMATION_MESSAGE);
 				} catch (BaseException e1) {
 					JOptionPane.showMessageDialog(null, e1.getMessage(),"错误",JOptionPane.ERROR_MESSAGE);
@@ -114,10 +115,10 @@ public class FrmUserManager extends JDialog implements ActionListener {
 				return;
 			}
 			if(JOptionPane.showConfirmDialog(this,"确定删除账号吗？","确认",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
-				String userid=this.tblData[i][1].toString();
+				String Riderid=this.tblData[i][1].toString();
 				try {
-					(new UserManager()).deleteUser(userid);
-					this.reloadUserTable();
+					(new RiderManager()).deleteRider(Riderid);
+					this.reloadRiderTable();
 				} catch (BaseException e1) {
 					JOptionPane.showMessageDialog(null, e1.getMessage(),"错误",JOptionPane.ERROR_MESSAGE);
 				}

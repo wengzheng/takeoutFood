@@ -21,6 +21,7 @@ import javax.swing.table.DefaultTableModel;
 
 
 import cn.edu.zucc.takeoutfood.control.AdministratorManager;
+import cn.edu.zucc.takeoutfood.control.SystemUserManager;
 import cn.edu.zucc.takeoutfood.model.BeanAdministrator;
 import cn.edu.zucc.takeoutfood.util.BaseException;
 
@@ -29,17 +30,18 @@ public class FrmAdministratorManager extends JDialog implements ActionListener {
 	private Button btnAdd = new Button("添加管理员");
 	private Button btnResetPwd = new Button("重置密码");
 	private Button btnDelete = new Button("注销管理员");
-	private Object tblTitle[]={"账号","姓名"};
+	private Object tblTitle[]={"序号","账号","姓名"};
 	private Object tblData[][];
 	DefaultTableModel tablmod=new DefaultTableModel();
 	private JTable adminTable=new JTable(tablmod);
-	private void reloadUserTable(){
+	private void reloadAdminTable(){
 		try {
 			List<BeanAdministrator> admin=(new AdministratorManager()).loadAllUsers(false);
-			tblData =new Object[admin.size()][2];
+			tblData =new Object[admin.size()][3];
 			for(int i=0;i<admin.size();i++){
-				tblData[i][0]=admin.get(i).getAdminid();
-				tblData[i][1]=admin.get(i).getAdminname();
+				tblData[i][0]=i+1;
+				tblData[i][1]=admin.get(i).getAdminid();
+				tblData[i][2]=admin.get(i).getAdminname();
 			}
 			tablmod.setDataVector(tblData,tblTitle);
 			this.adminTable.validate();
@@ -57,7 +59,7 @@ public class FrmAdministratorManager extends JDialog implements ActionListener {
 		toolBar.add(this.btnDelete);
 		this.getContentPane().add(toolBar, BorderLayout.NORTH);
 		//提取现有数据
-		this.reloadUserTable();
+		this.reloadAdminTable();
 		this.getContentPane().add(new JScrollPane(this.adminTable), BorderLayout.CENTER);
 		
 		// 屏幕居中显示
@@ -74,7 +76,6 @@ public class FrmAdministratorManager extends JDialog implements ActionListener {
 		this.btnDelete.addActionListener(this);
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				System.exit(0);
 			}
 		});
 	}
@@ -85,8 +86,8 @@ public class FrmAdministratorManager extends JDialog implements ActionListener {
 		if(e.getSource()==this.btnAdd){
 			FrmAdminManager_AddUser dlg=new FrmAdminManager_AddUser(this,"添加账号",true);
 			dlg.setVisible(true);
-			if(dlg.getUser()!=null){//刷新表格
-				this.reloadUserTable();
+			if(dlg.getAdmin()!=null){//刷新表格
+				this.reloadAdminTable();
 			}
 		}
 		else if(e.getSource()==this.btnResetPwd){
@@ -96,10 +97,10 @@ public class FrmAdministratorManager extends JDialog implements ActionListener {
 				return;
 			}
 			if(JOptionPane.showConfirmDialog(this,"确定重置密码吗？","确认",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
-				String userid=this.tblData[i][0].toString();
+				String userid=this.tblData[i][1].toString();
 				try {
-					(new AdministratorManager()).resetAdminPwd(userid);
-					JOptionPane.showMessageDialog(null,  "密码重置完成","提示",JOptionPane.INFORMATION_MESSAGE);
+					(new AdministratorManager()).ResetAdminPwd(userid);
+					JOptionPane.showMessageDialog(null,  "密码重置完成","提示:默认密码111111",JOptionPane.INFORMATION_MESSAGE);
 				} catch (BaseException e1) {
 					JOptionPane.showMessageDialog(null, e1.getMessage(),"错误",JOptionPane.ERROR_MESSAGE);
 				}
@@ -113,10 +114,10 @@ public class FrmAdministratorManager extends JDialog implements ActionListener {
 				return;
 			}
 			if(JOptionPane.showConfirmDialog(this,"确定删除账号吗？","确认",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
-				String userid=this.tblData[i][0].toString();
+				String userid=this.tblData[i][1].toString();
 				try {
 					(new AdministratorManager()).deleteAdmin(userid);
-					this.reloadUserTable();
+					this.reloadAdminTable();
 				} catch (BaseException e1) {
 					JOptionPane.showMessageDialog(null, e1.getMessage(),"错误",JOptionPane.ERROR_MESSAGE);
 				}

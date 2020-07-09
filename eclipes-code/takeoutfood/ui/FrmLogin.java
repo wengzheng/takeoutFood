@@ -31,7 +31,7 @@ import javax.swing.DefaultComboBoxModel;
 public class FrmLogin extends JDialog implements ActionListener {
 	private JPanel toolBar = new JPanel();
 	private JPanel workPane = new JPanel();
-	private Button btnLogin = new Button("µÇÂ½");
+	private Button btnLogin = new Button("µÇÂ¼");
 	private Button btnCancel = new Button("ÍË³ö");
 	private JLabel labelUser = new JLabel("ÓÃ»§£º");
 	private JLabel labelPwd = new JLabel("ÃÜÂë£º");
@@ -43,6 +43,10 @@ public class FrmLogin extends JDialog implements ActionListener {
 		super(f, s, b);
 		toolBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		toolBar.add(btnLogin);
+		toolBar.add(btnCancel);
+		btnLogin.setBounds(184, 5, 44, 25);
+		toolBar.add(btnLogin);
+		btnCancel.setBounds(233, 5, 44, 25);
 		toolBar.add(btnCancel);
 		this.getContentPane().add(toolBar, BorderLayout.SOUTH);
 		workPane.setLayout(null);
@@ -93,8 +97,7 @@ public class FrmLogin extends JDialog implements ActionListener {
 				return;
 			}
 			try {
-				
-				BeanSystemUser user=sum.loadUser(userid,this.comboBox.getSelectedIndex());			
+				BeanSystemUser user=sum.loadUser(userid, this.comboBox.getSelectedIndex());			
 				if(pwd.equals(user.getPwd())){
 					SystemUserManager.currentUser=user;
 					setVisible(false);
