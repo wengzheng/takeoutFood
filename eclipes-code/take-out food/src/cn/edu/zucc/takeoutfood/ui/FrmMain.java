@@ -18,7 +18,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import cn.edu.zucc.takeoutfood.ui.FrmUserManager;
-
+import cn.edu.zucc.takeoutfood.util.BaseException;
 import cn.edu.zucc.takeoutfood.control.SystemUserManager;
 import cn.edu.zucc.takeoutfood.model.BeanSystemUser;
 
@@ -45,13 +45,12 @@ public class FrmMain extends JFrame implements ActionListener {
     
     private JMenu menu_more=new JMenu("更多");
     
-    private JMenuItem  menuItem_buy=new JMenuItem("商品采购");
-    private JMenuItem  menuItem_Return=new JMenuItem("商品退订");
+    private JMenuItem  menuItem_OrderManager=new JMenuItem("订单管理");
     private JMenuItem  menuItem_evaluation = new JMenuItem("评价");
     
-    private JMenuItem  menuItem_CommodityUpManager=new JMenuItem("添加商品");
-    private JMenuItem  menuItem_CommodityDownManager=new JMenuItem("下架商品");
+    private JMenuItem  menuItem_CommodityManager=new JMenuItem("商品类编辑");
     private JMenuItem  menuItem_DisCountManager=new JMenuItem("优惠管理");
+    private JMenuItem  menuItem_FullReduceManager=new JMenuItem("满减管理");
     
     private final JMenuItem menuItem_SendManager = new JMenuItem("接单管理");
 	private final JMenuItem menuItem_overdo = new JMenuItem("完成送达");
@@ -92,10 +91,8 @@ public class FrmMain extends JFrame implements ActionListener {
 		}
 	    //用户订单框
 		else if(type==2) {
-	    	menu_Order.add(this.menuItem_buy);
-		    menuItem_buy.addActionListener(this);
-		    menu_Order.add(this.menuItem_Return);
-		    menuItem_Return.addActionListener(this);
+	    	menu_Order.add(this.menuItem_OrderManager);
+	    	menuItem_OrderManager.addActionListener(this);
 		    menubar.add(menu_Order);
 		    menu_Order.add(menuItem_evaluation);
 		    menuItem_evaluation.addActionListener(this);
@@ -103,12 +100,12 @@ public class FrmMain extends JFrame implements ActionListener {
 		    }
 	    //商家框
 		else if(type==3) {
-		    menu_Commodity.add(menuItem_CommodityUpManager);
-		    menuItem_CommodityUpManager.addActionListener(this);
-		    menu_Commodity.add(menuItem_CommodityDownManager);
-		    menuItem_CommodityDownManager.addActionListener(this);
+		    menu_Commodity.add(menuItem_CommodityManager);
+		    menuItem_CommodityManager.addActionListener(this);
 		    menu_Commodity.add(menuItem_DisCountManager);
 	    	menuItem_DisCountManager.addActionListener(this);
+	    	menu_Commodity.add(menuItem_FullReduceManager);
+	    	menuItem_FullReduceManager.addActionListener(this);
 		    menubar.add(menu_Commodity);
 		    
 	    	} 
@@ -174,24 +171,24 @@ public class FrmMain extends JFrame implements ActionListener {
 		}
 		
 		
-		else if(e.getSource()==this.menuItem_buy) {
-			
-		}
-		else if(e.getSource()==this.menuItem_Return) {
+		else if(e.getSource()==this.menuItem_OrderManager) {
 			
 		}
 		else if(e.getSource()==this.menuItem_evaluation) {
 			
 		}
 		
-		else if(e.getSource()==this.menuItem_CommodityUpManager) {
-			
-		}
-		else if(e.getSource()==this.menuItem_CommodityDownManager) {
-			
+		else if(e.getSource()==this.menuItem_CommodityManager) {
+			FrmComodityTypeManager dlg=new FrmComodityTypeManager(this, "商品类编辑", true);
+			dlg.setVisible(true);
 		}
 		else if(e.getSource()==this.menuItem_DisCountManager) {
-			
+			FrmDiscountManager dlg= new FrmDiscountManager(this, "优惠劵编辑", true);
+			dlg.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_FullReduceManager) {
+			FrmFullReductionPlanManager dlg=new FrmFullReductionPlanManager(this, "满减方案编辑", true);
+			dlg.setVisible(true);
 		}
 		
 		else if(e.getSource()==this.menuItem_SendManager) {

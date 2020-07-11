@@ -28,6 +28,7 @@ public class SystemUserManager {
 			USA.setSystemUserid(bu.getUserid());
 			USA.setSystemUsername(bu.getUsername());
 			USA.setPwd(bu.getUpwd());
+			USA.setSystemNUM(bu.getpNUM());
 			break;
 		case 3:
 			//…Ãº“
@@ -36,6 +37,7 @@ public class SystemUserManager {
 			USA.setSystemUserid(bs.getShopid());
 			USA.setSystemUsername(bs.getShopname());
 			USA.setPwd(bs.getShoppwd());
+			USA.setSystemNUM(bs.getShopNUM());
 			break;
 		case 4:
 			//∆Ô ÷
@@ -44,6 +46,7 @@ public class SystemUserManager {
 			USA.setSystemUserid(br.getRiderid());
 			USA.setSystemUsername(br.getRidername());
 			USA.setPwd(br.getRiderpwd());
+			USA.setSystemNUM(br.getRiderID());
 			break;
 		default:
 			break;

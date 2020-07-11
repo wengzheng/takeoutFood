@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2020/7/9 8:16:08                             */
+/* Created on:     2020/7/10 8:47:17                            */
 /*==============================================================*/
 
 
@@ -26,7 +26,7 @@ drop table if exists orders;
 
 drop table if exists rider;
 
-drop table if exists ridersends;
+drop table if exists ridesends;
 
 drop table if exists shop;
 
@@ -71,6 +71,7 @@ create table commodity
    commodityname        varchar(30) not null,
    price                float(30) not null,
    discount             float(30) not null,
+   evaluate             varchar(30),
    primary key (commodityID)
 );
 
@@ -84,7 +85,7 @@ create table comoditytype
    commoditytypeID      int not null,
    shopID               int,
    commoditytypename    varchar(30) not null,
-   commoditynum         varchar(30) not null,
+   commoditynum         int(11) not null,
    primary key (commoditytypeID)
 );
 
@@ -96,10 +97,10 @@ alter table comoditytype comment '商品类别';
 create table coupon
 (
    couponID             int not null,
-   shopID               int,
+   shopID               int not null,
    cdiscount            float(30) not null,
-   cstarttime           timestamp not null,
-   cendtime             timestamp not null,
+   cstarttime           datetime not null,
+   cendtime             datetime not null,
    requarenum           int not null,
    primary key (couponID)
 );
@@ -149,7 +150,7 @@ create table incoupon
    shopID               int not null,
    cdiscount            float(30) not null,
    cnum                 bigint not null,
-   cdeadline            timestamp not null,
+   cdeadline            datetime not null,
    primary key (incouponID)
 );
 
@@ -182,12 +183,12 @@ create table orders
    userID               int not null,
    shopID               int not null,
    fullreduceplanID     int,
+   couponID             int,
    incouponID           int,
    originalamount       float(30) not null,
    settlementamount     float(30) not null,
-   couponID             int not null,
-   downtime             timestamp not null,
-   requiretime          timestamp not null,
+   downtime             datetime not null,
+   requiretime          datetime not null,
    orderstate           varchar(30) not null,
    primary key (orderID)
 );
@@ -204,7 +205,7 @@ create table rider
    rideraccount         varchar(30) not null,
    ridername            varchar(30) not null,
    riderpwd             varchar(30),
-   rstarttime           timestamp not null,
+   rstarttime           datetime not null,
    rIdtpye              varchar(20) not null,
    primary key (riderID)
 );
@@ -212,19 +213,19 @@ create table rider
 alter table rider comment '骑手信息';
 
 /*==============================================================*/
-/* Table: ridersends                                            */
+/* Table: ridesends                                             */
 /*==============================================================*/
-create table ridersends
+create table ridesends
 (
    sendID               int not null,
    orderID              int not null,
    riderID              int not null,
-   sendtime             timestamp not null,
-   evaluate             varchar(30) not null,
+   sendtime             datetime not null,
+   income               float(30) not null,
    primary key (sendID)
 );
 
-alter table ridersends comment '骑手送单';
+alter table ridesends comment '骑手送单';
 
 /*==============================================================*/
 /* Table: shop                                                  */
@@ -235,10 +236,10 @@ create table shop
    adminID              int,
    shopaccount          varchar(30) not null,
    shopname             varchar(30) not null,
-   shoppwd              varchar(30),
-   shopstar             int not null,
-   avgconsume           float(20) not null,
-   totalnum             int not null,
+   shoppwd              varchar(30) not null,
+   shopstar             int,
+   avgconsume           float(20),
+   totalnum             int,
    primary key (shopID)
 );
 
@@ -254,14 +255,14 @@ create table users
    addressID            int,
    useraccount          varchar(30) not null,
    username             varchar(30) not null,
-   usex                 varchar(2) not null,
+   usex                 varchar(4) not null,
    userpwd              varchar(30) not null,
    phone                varchar(15) not null,
    email                varchar(30) not null,
    address              varchar(30) not null,
-   registertime         timestamp not null,
-   VIP                  bool not null,
-   VIPdeadline          timestamp not null,
+   registertime         datetime not null,
+   VIP                  bool,
+   VIPdeadline          datetime,
    primary key (userID)
 );
 
@@ -312,7 +313,7 @@ alter table orders add constraint FK_委托 foreign key (riderID)
 alter table rider add constraint FK_管理 foreign key (adminID)
       references admin (adminID) on delete restrict on update restrict;
 
-alter table ridersends add constraint FK_指派 foreign key (orderID)
+alter table ridesends add constraint FK_指派 foreign key (orderID)
       references orders (orderID) on delete restrict on update restrict;
 
 alter table shop add constraint FK_管理3 foreign key (adminID)
