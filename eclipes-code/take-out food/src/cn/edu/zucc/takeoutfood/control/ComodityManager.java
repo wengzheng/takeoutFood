@@ -36,6 +36,13 @@ public class ComodityManager {
 			pst.execute();
 			rs.close();
 			pst.close();
+			//ÐÞ¸ÄÊýÁ¿
+			sql="UPDATE comoditytype SET commoditynum=commoditynum-1 WHERE comoditytype.commoditytypeID=?";
+			pst=conn.prepareStatement(sql);
+			pst.setInt(1,FrmComodityTypeManager.comoditytypeid);
+			pst.execute();
+			pst.close();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DbException(e);
@@ -76,7 +83,13 @@ public class ComodityManager {
 			pst.setInt(1,cid);
 			pst.setInt(2,FrmComodityTypeManager.comoditytypeid);
 			pst.setString(3, comodity.getCommodityname());
-			pst.setFloat(4, comodity.getPrice());
+			pst.setDouble(4, comodity.getPrice());
+			pst.execute();
+			pst.close();
+			
+			sql="UPDATE comoditytype SET commoditynum=commoditynum+1 WHERE comoditytype.commoditytypeID=?";
+			pst=conn.prepareStatement(sql);
+			pst.setInt(1,FrmComodityTypeManager.comoditytypeid);
 			pst.execute();
 			pst.close();
 		}catch(SQLException ex) {

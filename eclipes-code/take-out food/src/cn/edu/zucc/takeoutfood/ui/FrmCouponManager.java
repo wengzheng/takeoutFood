@@ -3,7 +3,6 @@ package cn.edu.zucc.takeoutfood.ui;
 import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,32 +18,27 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import cn.edu.zucc.takeoutfood.control.ComodityManager;
-import cn.edu.zucc.takeoutfood.control.ComodityTypeManager;
+import cn.edu.zucc.takeoutfood.control.CouponManager;
 import cn.edu.zucc.takeoutfood.model.BeanComodity;
-import cn.edu.zucc.takeoutfood.model.BeanComoditytype;
+import cn.edu.zucc.takeoutfood.model.BeanCoupon;
 import cn.edu.zucc.takeoutfood.util.BaseException;
-import javax.swing.JButton;
 
-public class FrmComodityTypeManager extends JDialog implements ActionListener {
-	public static int comoditytypeid;
-	
+public class FrmCouponManager extends JDialog implements ActionListener {
 	private JPanel toolBar = new JPanel();
-	private Button btnAdd = new Button("添加商品类");
-	private Button btnDelete = new Button("下架商品类");
-	private JButton btnCommodity = new JButton("商品明细");
-	private Object tblTitle[]={"编号","商品类名（商品名）","数量"};
+	private Button btnAdd = new Button("添加优惠券");
+	private Button btnDelete = new Button("删除优惠券");
+	private Object tblTitle[]={"序号","集单要求数","结束日期"};
 	private Object tblData[][];
 	DefaultTableModel tablmod=new DefaultTableModel();
 	private JTable userTable=new JTable(tablmod);
-	
 	private void reloadUserTable(){
 		try {
-			List<BeanComoditytype> users=(new ComodityTypeManager()).loadAllComoditytype(false);
+			List<BeanCoupon> users=(new CouponManager()).loadAllComoditys(false);
 			tblData =new Object[users.size()][3];
 			for(int i=0;i<users.size();i++){
-				tblData[i][0]=users.get(i).getCommoditytypeNUM();
-				tblData[i][1]=users.get(i).getCommoditytypename();
-				tblData[i][2]=users.get(i).getCommoditynum();
+				tblData[i][0]=users.get(i).getCouponNUM();
+				tblData[i][1]=users.get(i).getRequarrenum();
+				tblData[i][2]=users.get(i).getC_endtime();
 			}
 			tablmod.setDataVector(tblData,tblTitle);
 			this.userTable.validate();
@@ -53,15 +47,12 @@ public class FrmComodityTypeManager extends JDialog implements ActionListener {
 			e.printStackTrace();
 		}
 	}
-	
-	public FrmComodityTypeManager(Frame f, String s, boolean b) {
+	public FrmCouponManager(FrmMain f, String s, boolean b) {
 		super(f, s, b);
 		toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
 		toolBar.add(btnAdd);
 		toolBar.add(this.btnDelete);
 		this.getContentPane().add(toolBar, BorderLayout.NORTH);
-		
-		toolBar.add(btnCommodity);
 		//提取现有数据
 		this.reloadUserTable();
 		this.getContentPane().add(new JScrollPane(this.userTable), BorderLayout.CENTER);
@@ -77,7 +68,6 @@ public class FrmComodityTypeManager extends JDialog implements ActionListener {
 
 		this.btnAdd.addActionListener(this);
 		this.btnDelete.addActionListener(this);
-		this.btnCommodity.addActionListener(this);
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 			}
@@ -87,23 +77,24 @@ public class FrmComodityTypeManager extends JDialog implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==this.btnAdd){
-			FrmComodityTypeManager_AddComodity dlg=new FrmComodityTypeManager_AddComodity(this,"添加商品类",true);
+			FrmCouponManager_AddCoupon dlg=new FrmCouponManager_AddCoupon(this,"添加优惠券",true);
 			dlg.setVisible(true);
-			if(dlg.getcomodity()!=null){//刷新表格
+			if(dlg.getcoupon()!=null){//刷新表格
 				this.reloadUserTable();
 			}
 		}
 		
+		
 		else if(e.getSource()==this.btnDelete){
 			int i=this.userTable.getSelectedRow();
 			if(i<0) {
-				JOptionPane.showMessageDialog(null,  "请选择商品类","提示",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null,  "请选择优惠券","提示",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			if(JOptionPane.showConfirmDialog(this,"确定下架商品类吗？","确认",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
-				int comoditytypeid=Integer.parseInt(this.tblData[i][0].toString());
+			if(JOptionPane.showConfirmDialog(this,"确定删除券吗？","确认",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+				int comodityid=Integer.parseInt(this.tblData[i][0].toString());
 				try {
-					(new ComodityTypeManager()).deleteComodityType(comoditytypeid);
+					(new CouponManager()).deleteComodity(comodityid);
 					this.reloadUserTable();
 				} catch (BaseException e1) {
 					JOptionPane.showMessageDialog(null, e1.getMessage(),"错误",JOptionPane.ERROR_MESSAGE);
@@ -111,24 +102,5 @@ public class FrmComodityTypeManager extends JDialog implements ActionListener {
 				
 			}
 		}
-		else if(e.getSource()==this.btnCommodity){
-			int i=this.userTable.getSelectedRow();
-			if(i<0) {
-				JOptionPane.showMessageDialog(null,  "请选择商品类","提示",JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			if(JOptionPane.showConfirmDialog(this,"确定编辑商品类吗？","确认",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
-				this.comoditytypeid=Integer.parseInt(this.tblData[i][0].toString());
-				try {
-					FrmcomodityManager dlg=new FrmcomodityManager(this, "编辑商品", true);
-					dlg.setVisible(true);
-				} catch (BaseException e1) {
-					JOptionPane.showMessageDialog(null, e1.getMessage(),"错误",JOptionPane.ERROR_MESSAGE);
-				}
-			}
-			this.reloadUserTable();
-		}
-		
 	}
-	
 }

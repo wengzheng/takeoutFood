@@ -36,17 +36,18 @@ public class FrmMain extends JFrame implements ActionListener {
     private JMenu menu_Order=new JMenu("订单管理");
     private JMenu menu_Commodity=new JMenu("商品管理");
     private JMenu menu_takeout = new JMenu("外送管理");
-    private JMenu menu_search=new JMenu("查询");
+   // private JMenu menu_search=new JMenu("查询");
+    private JMenu menu_more=new JMenu("更多");
     
     private JMenuItem  menuItem_Adminisitor=new JMenuItem("管理员操作");
     private JMenuItem  menuItem_UserManager=new JMenuItem("用户管理");
     private JMenuItem  menuItem_ShopManager=new JMenuItem("商家管理");
     private JMenuItem  menuItem_RiderManager=new JMenuItem("骑手管理");
     
-    private JMenu menu_more=new JMenu("更多");
     
     private JMenuItem  menuItem_OrderManager=new JMenuItem("订单管理");
     private JMenuItem  menuItem_evaluation = new JMenuItem("评价");
+    private JMenuItem  menuItem_coupon = new JMenuItem("优惠劵明细");
     
     private JMenuItem  menuItem_CommodityManager=new JMenuItem("商品类编辑");
     private JMenuItem  menuItem_DisCountManager=new JMenuItem("优惠管理");
@@ -96,7 +97,8 @@ public class FrmMain extends JFrame implements ActionListener {
 		    menubar.add(menu_Order);
 		    menu_Order.add(menuItem_evaluation);
 		    menuItem_evaluation.addActionListener(this);
-		    
+		    menu_Order.add(menuItem_coupon);
+		    menuItem_coupon.addActionListener(this);
 		    }
 	    //商家框
 		else if(type==3) {
@@ -120,7 +122,7 @@ public class FrmMain extends JFrame implements ActionListener {
 			}  
 		
 		//查询框    
-		menubar.add(menu_search);
+		/*menubar.add(menu_search);
 	    menu_search.add(this.menuItem_UserOrderSearch);
 	    menuItem_UserOrderSearch.addActionListener(this);
 	    menu_search.add(this.menuItem_RiderSendSearch);
@@ -128,7 +130,7 @@ public class FrmMain extends JFrame implements ActionListener {
 	    menu_search.add(this.menuItem_CommodityStatic);
 	    menuItem_CommodityStatic.addActionListener(this);
 	    menu_search.add(this.menuItem_CommodityStatic);
-	    this.setJMenuBar(menubar);
+	    this.setJMenuBar(menubar);*/
 	    
 	    //更多
 	    menubar.add(menu_more);
@@ -172,10 +174,16 @@ public class FrmMain extends JFrame implements ActionListener {
 		
 		
 		else if(e.getSource()==this.menuItem_OrderManager) {
-			
+			FrmOrderManager dlg=new FrmOrderManager(this,"订单管理", true);
+			dlg.setVisible(true);
 		}
 		else if(e.getSource()==this.menuItem_evaluation) {
-			
+			FrmOrderEvaluation dlg=new FrmOrderEvaluation(this, "评价", true);
+			dlg.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_coupon) {
+			FrmCouponDetail dlg =new FrmCouponDetail(this, "优惠劵明细", true);
+			dlg.setVisible(true);
 		}
 		
 		else if(e.getSource()==this.menuItem_CommodityManager) {
@@ -183,7 +191,7 @@ public class FrmMain extends JFrame implements ActionListener {
 			dlg.setVisible(true);
 		}
 		else if(e.getSource()==this.menuItem_DisCountManager) {
-			FrmDiscountManager dlg= new FrmDiscountManager(this, "优惠劵编辑", true);
+			FrmCouponManager dlg= new FrmCouponManager(this, "优惠劵编辑", true);
 			dlg.setVisible(true);
 		}
 		else if(e.getSource()==this.menuItem_FullReduceManager) {
@@ -192,13 +200,15 @@ public class FrmMain extends JFrame implements ActionListener {
 		}
 		
 		else if(e.getSource()==this.menuItem_SendManager) {
-			
+			FrmRiderReceiveManager dlg=new FrmRiderReceiveManager(this,"接订单", true);
+			dlg.setVisible(true);
 		}
 		else if(e.getSource()==this.menuItem_overdo) {
-			
+			FrmRiderOverdoManager dlg=new FrmRiderOverdoManager(this,"订单完成", true);
+			dlg.setVisible(true);
 		}
 		
-		else if(e.getSource()==this.menuItem_UserOrderSearch) {
+		/*else if(e.getSource()==this.menuItem_UserOrderSearch) {
 			
 		}
 		else if(e.getSource()==this.menuItem_RiderSendSearch) {
@@ -206,7 +216,8 @@ public class FrmMain extends JFrame implements ActionListener {
 		}
 		else if(e.getSource()==this.menuItem_CommodityStatic) {
 			
-		}
+		}*/
+		
 		else if(e.getSource()==this.menuItem_modifyPwd){
 			FrmModifyPwd dlg=new FrmModifyPwd(this,"密码修改",true);
 			dlg.setVisible(true);

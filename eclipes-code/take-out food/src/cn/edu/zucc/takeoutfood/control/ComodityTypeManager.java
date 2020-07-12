@@ -18,8 +18,6 @@ public class ComodityTypeManager {
 		Connection conn=null;
 		if("".equals(comodity.getCommoditytypename()))
 			throw new BusinessException("商品类名为空");
-		if(comodity.getCommoditynum()==0) 
-			throw new BusinessException("数量为空");
 		try {
 			conn=DBUtil.getConnection();
 			String sql="select commoditytypeID from comoditytype where commoditytypename=? ";
@@ -42,12 +40,11 @@ public class ComodityTypeManager {
 			rs.close();
 			pst.close();
 			
-			sql="INSERT comoditytype(commoditytypeID,shopID,commoditytypename,commoditynum) VALUES (?,?,?,?);";
+			sql="INSERT comoditytype(commoditytypeID,shopID,commoditytypename,commoditynum) VALUES (?,?,?,0);";
 			pst=conn.prepareStatement(sql);
 			pst.setInt(1,n);
 			pst.setInt(2,SystemUserManager.currentUser.getSystemNUM());
 			pst.setString(3, comodity.getCommoditytypename());
-			pst.setInt(4, comodity.getCommoditynum());
 			pst.execute();
 			pst.close();
 		}catch(SQLException ex) {

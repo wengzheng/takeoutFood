@@ -11,6 +11,7 @@ import cn.edu.zucc.takeoutfood.util.DBUtil;
 import cn.edu.zucc.takeoutfood.util.DbException;
 import cn.edu.zucc.takeoutfood.util.BusinessException;
 import cn.edu.zucc.takeoutfood.model.BeanCoupon;
+import cn.edu.zucc.takeoutfood.model.BeanCouponHold;
 import cn.edu.zucc.takeoutfood.util.BaseException;
 
 public class CouponManager {
@@ -111,9 +112,8 @@ public class CouponManager {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			coupon.setC_endtime(sdf.parse(endtime));
 			conn=DBUtil.getConnection();
-			String sql1="SELECT MAX(couponID) FROM coupon where shopID=?";
+			String sql1="SELECT MAX(couponID) FROM coupon";
 			java.sql.PreparedStatement pst=conn.prepareStatement(sql1);
-			pst.setInt(1, SystemUserManager.currentUser.getSystemNUM());
 			java.sql.ResultSet rs=pst.executeQuery();
 			if(rs.next()) {
 				coupon.setCouponNUM(rs.getInt(1)+1);
@@ -155,7 +155,6 @@ public class CouponManager {
 		}
 		
 	}
-		
-	
 
+	
 }

@@ -28,7 +28,6 @@ public class FrmComodityTypeManager_AddComodity extends JDialog implements Actio
 	private Button btnOk = new Button("确定");
 	private Button btnCancel = new Button("取消");
 	private JLabel labelUsername = new JLabel("商品名：");
-	private JLabel labelNum = new JLabel("数量：");
 	private JTextField edtnum = new JTextField(20);
 	private final JTextField edtname = new JTextField(20);
 	public FrmComodityTypeManager_AddComodity(JDialog f, String s, boolean b)  {
@@ -38,9 +37,6 @@ public class FrmComodityTypeManager_AddComodity extends JDialog implements Actio
 			toolBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			this.getContentPane().add(toolBar, BorderLayout.SOUTH);
 			workPane.setLayout(null);
-			labelNum.setVerticalAlignment(SwingConstants.BOTTOM);
-			labelNum.setBounds(8, 37, 90, 18);
-			workPane.add(labelNum);
 			labelUsername.setBounds(8, 8, 72, 18);
 			workPane.add(labelUsername);
 			this.getContentPane().add(workPane, BorderLayout.CENTER);
@@ -74,15 +70,8 @@ public class FrmComodityTypeManager_AddComodity extends JDialog implements Actio
 			else if(e.getSource()==this.btnOk){
 				int commoditynumber;
 				String commodityname=this.edtname.getText();
-				
-				if("".equals(this.edtnum.getText())){
-					commoditynumber=0;
-				}else {
-					commoditynumber=Integer.parseInt(new String(this.edtnum.getText()));
-				}
 				comodity=new BeanComoditytype();
 				comodity.setCommoditytypename(commodityname);
-				comodity.setCommoditynum(commoditynumber);
 				try {
 					(new ComodityTypeManager()).createComodityType(comodity);
 					this.setVisible(false);

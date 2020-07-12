@@ -6,8 +6,8 @@ public class BeanComodity {
 	private int commodityNUM;
 	private int commoditytypeNUM;
 	private String commodityname;
-	private float price;
-	private float discount;
+	private double price;
+	private double discount;
 	private String evaluate; 
 	public int getCommoditytypeNUM() {
 		return commoditytypeNUM;
@@ -21,13 +21,13 @@ public class BeanComodity {
 	public void setCommodityNUM(int commodityNUM) {
 		this.commodityNUM = commodityNUM;
 	}
-	public float getPrice() {
+	public double getPrice() {
 		return price;
 	}
-	public void setPrice(float price2) {
+	public void setPrice(double price2) {
 		this.price =price2;
 	}
-	public float getDiscount() {
+	public double getDiscount() {
 		return discount;
 	}
 	public void setDiscount(float discount) {

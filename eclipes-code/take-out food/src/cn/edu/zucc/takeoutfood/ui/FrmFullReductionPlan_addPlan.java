@@ -20,6 +20,8 @@ import cn.edu.zucc.takeoutfood.model.BeanCoupon;
 import cn.edu.zucc.takeoutfood.model.FullReductionPlan;
 import cn.edu.zucc.takeoutfood.util.BaseException;
 import javax.swing.JRadioButton;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class FrmFullReductionPlan_addPlan extends JDialog implements ActionListener{
 	private FullReductionPlan rider=null;
@@ -31,8 +33,9 @@ public class FrmFullReductionPlan_addPlan extends JDialog implements ActionListe
 	private JLabel labelUsername = new JLabel("满减金额：");
 	private JTextField edtUserid = new JTextField(20);
 	private JTextField edtUsername = new JTextField(20);
-	private final JLabel withcoupon = new JLabel("是否可与优惠券叠加：");
-	JRadioButton radioButton = new JRadioButton("是/否");
+	private JComboBox comboBox = new JComboBox();
+	private JLabel withcoupon = new JLabel("是否可与优惠券叠加：");
+	
 	
 
 public FrmFullReductionPlan_addPlan(JDialog f, String s, boolean b) {
@@ -59,8 +62,12 @@ public FrmFullReductionPlan_addPlan(JDialog f, String s, boolean b) {
 	workPane.add(withcoupon);
 	
 	
-	radioButton.setBounds(178, 74, 67, 27);
-	workPane.add(radioButton);
+	comboBox.setModel(new DefaultComboBoxModel(new String[] {"否", "是"}));
+	comboBox.setBounds(178, 75, 44, 24);
+	workPane.add(comboBox);
+	
+	
+	
 	this.btnCancel.addActionListener(this);
 	this.btnOk.addActionListener(this);
 	this.setSize(300, 220);
@@ -80,26 +87,29 @@ public void actionPerformed(ActionEvent e) {
 		this.setVisible(false);
 		return;
 	}
+	
 	else if(e.getSource()==this.btnOk){
 		float discount;//优惠金额
 		float fullcount;//满减金额
-		boolean wc=this.radioButton.getAutoscrolls();//是否可与优惠券叠加
-		if("".equals(new String(this.edtUserid.getText() ))) {
+		boolean wc;//是否可与优惠券叠加
+		if("".equals(new String(this.edtUserid.getText() ))) 
 			discount=0;
-		}
-		else {
+		else 
 			discount=Float.parseFloat(new String(this.edtUserid.getText()));
-		}
 		if("".equals(new String(this.edtUsername.getText() )))
 			fullcount=0;
 		else 
 			fullcount=Float.parseFloat(new String(this.edtUsername.getText()));
+		if(this.comboBox.getSelectedIndex()==1)
+			wc=true;
+		else
+			wc=false;
 		
 		rider=new FullReductionPlan();
 		rider.setF_discount(fullcount);
 		rider.setWithcoupon(wc);
 		rider.setFullreduceprice(discount);
-		
+		//System.out.println(wc);
 		try {
 			(new FullReductionPlanManager()).createFullReductionPlan(rider);
 			this.setVisible(false);
