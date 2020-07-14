@@ -28,7 +28,6 @@ public class FrmComodityTypeManager_AddComodity extends JDialog implements Actio
 	private Button btnOk = new Button("确定");
 	private Button btnCancel = new Button("取消");
 	private JLabel labelUsername = new JLabel("商品名：");
-	private JTextField edtnum = new JTextField(20);
 	private final JTextField edtname = new JTextField(20);
 	public FrmComodityTypeManager_AddComodity(JDialog f, String s, boolean b)  {
 			super(f, s, b);
@@ -44,8 +43,6 @@ public class FrmComodityTypeManager_AddComodity extends JDialog implements Actio
 			workPane.add(btnOk);
 			btnCancel.setBounds(218, 82, 44, 25);
 			workPane.add(btnCancel);
-			edtnum.setBounds(94, 34, 168, 24);
-			workPane.add(edtnum);
 			workPane.add(edtname);
 			
 			

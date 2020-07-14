@@ -19,6 +19,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import cn.edu.zucc.takeoutfood.control.ComodityTypeManager;
+import cn.edu.zucc.takeoutfood.control.CouponHoldManager;
 import cn.edu.zucc.takeoutfood.control.OrderManager;
 import cn.edu.zucc.takeoutfood.control.ShopManager;
 import cn.edu.zucc.takeoutfood.model.BeanOrder;
@@ -30,6 +31,7 @@ public class FrmOrderManager extends JDialog implements ActionListener {
 	private JPanel toolBar = new JPanel();
 	private Button btnAdd = new Button("购物");
 	private Button btnDelete = new Button("删除订单");
+	private JButton btnNewButton = new JButton("使用优惠劵");
 	private Object tblTitle[]={"序列号","结算金额","要求送达时间","订单状态"};
 	private Object tblData[][];
 	DefaultTableModel tablmod=new DefaultTableModel();
@@ -58,6 +60,7 @@ public class FrmOrderManager extends JDialog implements ActionListener {
 		toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
 		toolBar.add(btnAdd);
 		toolBar.add(this.btnDelete);
+		toolBar.add(btnNewButton);
 		this.getContentPane().add(toolBar, BorderLayout.NORTH);
 		//提取现有数据
 		this.reloadUserTable();
@@ -74,6 +77,7 @@ public class FrmOrderManager extends JDialog implements ActionListener {
 
 		this.btnAdd.addActionListener(this);
 		this.btnDelete.addActionListener(this);
+		this.btnNewButton.addActionListener(this);
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 			}
@@ -93,10 +97,10 @@ public class FrmOrderManager extends JDialog implements ActionListener {
 		else if(e.getSource()==this.btnDelete){
 			int i=this.userTable.getSelectedRow();
 			if(i<0) {
-				JOptionPane.showMessageDialog(null,  "请选择账号","提示",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null,  "请选择订单","提示",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			if(JOptionPane.showConfirmDialog(this,"确定删除账号吗？","确认",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+			if(JOptionPane.showConfirmDialog(this,"确定删除订单吗？","确认",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
 				int Orderid=Integer.parseInt(this.tblData[i][0].toString());
 				try {
 					(new OrderManager()).deleteOrder(Orderid);
@@ -106,6 +110,19 @@ public class FrmOrderManager extends JDialog implements ActionListener {
 				}
 				
 			}
+		}
+		else if(e.getSource()==this.btnNewButton){
+			int i=this.userTable.getSelectedRow();
+			if(i<0) {
+				JOptionPane.showMessageDialog(null,  "请选择订单","提示",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			if(JOptionPane.showConfirmDialog(this,"确定该订单使用优惠劵吗？","确认",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+				CouponHoldManager.dec_orderid=Integer.parseInt(this.tblData[i][0].toString());
+				FrmCouponDetail dlg=new FrmCouponDetail(this,"使用优惠劵",true);
+				dlg.setVisible(true);				
+			}
+			this.reloadUserTable();
 		}
 	}
 }

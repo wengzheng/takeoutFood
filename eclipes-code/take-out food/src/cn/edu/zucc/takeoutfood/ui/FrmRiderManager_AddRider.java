@@ -68,7 +68,7 @@ public class FrmRiderManager_AddRider extends JDialog implements ActionListener{
 		label.setBounds(8, 103, 90, 18);
 		
 		workPane.add(label);
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"", "old","new"}));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"","new"}));
 		comboBox.setBounds(112, 102, 62, 24);
 		
 		workPane.add(comboBox);

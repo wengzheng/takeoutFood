@@ -26,6 +26,8 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
 import cn.edu.zucc.takeoutfood.control.ComodityTypeManager;
+import cn.edu.zucc.takeoutfood.control.CouponHoldManager;
+import cn.edu.zucc.takeoutfood.control.GiveCouponManager;
 import cn.edu.zucc.takeoutfood.control.OrderManager;
 import cn.edu.zucc.takeoutfood.control.SystemUserManager;
 import cn.edu.zucc.takeoutfood.control.UserManager;
@@ -39,7 +41,7 @@ public class FrmOrderManager_AddOrder extends JDialog implements ActionListener{
 	private JPanel toolBar = new JPanel();
 	private JButton btnCommodity = new JButton("商品明细");
 	private JButton btnText = new JButton("相关信息填写");
-	private Object tblTitle[]={"编号","商品类名（商品名）"};
+	private Object tblTitle[]={"商品类编号","商店编号","商品类名（商品名）"};
 	private Object tblData[][];
 	DefaultTableModel tablmod=new DefaultTableModel();
 	private JTable userTable=new JTable(tablmod);
@@ -48,11 +50,11 @@ public class FrmOrderManager_AddOrder extends JDialog implements ActionListener{
 	private void reloadUserTable(){
 		try {
 			List<BeanComoditytype> users=(new ComodityTypeManager()).loadAllComoditytype(false);
-			tblData =new Object[users.size()][2];
+			tblData =new Object[users.size()][3];
 			for(int i=0;i<users.size();i++){
 				tblData[i][0]=users.get(i).getCommoditytypeNUM();
-				tblData[i][1]=users.get(i).getCommoditytypename();
-				//tblData[i][2]=users.get(i).getCommoditynum();
+				tblData[i][1]=users.get(i).getShopNUM();
+				tblData[i][2]=users.get(i).getCommoditytypename();
 			}
 			tablmod.setDataVector(tblData,tblTitle);
 			this.userTable.validate();
@@ -109,17 +111,21 @@ public class FrmOrderManager_AddOrder extends JDialog implements ActionListener{
 			if(JOptionPane.showConfirmDialog(this,"确认该商品类吗？","确认",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
 				BeanOrder order=new BeanOrder();
 				order.setUserID(SystemUserManager.currentUser.getSystemNUM());
-				order.setShopID(Integer.parseInt(this.tblData[i][0].toString()));
+				order.setShopID(Integer.parseInt(this.tblData[i][1].toString()));
 				FrmComodityTypeManager.comoditytypeid=Integer.parseInt(this.tblData[i][0].toString());
 				try {
+					FrmOrdeDetailManager dlg=new FrmOrdeDetailManager(this, "编辑商品", true);
+					dlg.setVisible(true);
 					(new OrderManager()).createOrder(order);
+					(new GiveCouponManager()).AddGiveCoupon(Integer.parseInt(this.tblData[i][0].toString()));
+					//(new CouponHoldManager()).addCouponHold();
+					this.reloadUserTable();
 				} catch (BaseException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				
-				FrmOrdeDetailManager dlg=new FrmOrdeDetailManager(this, "编辑商品", true);
-				dlg.setVisible(true);
+				
 				
 			}
 		}

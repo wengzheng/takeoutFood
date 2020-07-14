@@ -26,7 +26,7 @@ import cn.edu.zucc.takeoutfood.util.BaseException;
 public class FrmRiderOverdoManager extends JDialog implements ActionListener {
 		private JPanel toolBar = new JPanel();
 		private Button btnDelete = new Button("确认送达");
-		private Object tblTitle[]={"序列号","订单号","要求送达时间"};
+		private Object tblTitle[]={"序列号","订单号","送达时间","每单收入"};
 		private Object tblData[][];
 		DefaultTableModel tablmod=new DefaultTableModel();
 		private JTable userTable=new JTable(tablmod);
@@ -34,11 +34,12 @@ public class FrmRiderOverdoManager extends JDialog implements ActionListener {
 			try {
 				//集单送券
 				List<BeanRiderSend> users=(new RiderSendManager()).loadAllOrdersends(false);
-				tblData =new Object[users.size()][3];
+				tblData =new Object[users.size()][4];
 				for(int i=0;i<users.size();i++){
 					tblData[i][0]=i+1;
 					tblData[i][1]=users.get(i).getOrderID();
 					tblData[i][2]=users.get(i).getSendtime();
+					tblData[i][3]=users.get(i).getIncome();
 				}
 				tablmod.setDataVector(tblData,tblTitle);
 				this.userTable.validate();

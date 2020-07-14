@@ -130,8 +130,10 @@ public class RiderManager {
 			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
 			pst.setString(1,riderid);
 			java.sql.ResultSet rs=pst.executeQuery();
+			int n=0;
 			if(rs.next()) {
-				bu.setRiderID(rs.getInt(1));
+				n=rs.getInt(1);
+				bu.setRiderID(n);
 				bu.setRiderid(rs.getString(2));
 				bu.setRidername(rs.getString(3));
 				bu.setRiderpwd(rs.getString(4));
@@ -139,6 +141,11 @@ public class RiderManager {
 			else
 				throw new BusinessException("µÇÂ½ÕËºÅ²»´æÔÚ");
 			rs.close();
+			pst.close();
+			sql="update rider set rIdtpye=? WHERE TIMESTAMPDIFF(MONTH,rstarttime,NOW())>0 and riderID="+n;
+			pst=conn.prepareStatement(sql);
+			pst.setString(1,new String("old"));
+			pst.execute();
 			pst.close();
 			return bu;
 		} catch (SQLException e) {

@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 
 import cn.edu.zucc.takeoutfood.ui.FrmUserManager;
 import cn.edu.zucc.takeoutfood.util.BaseException;
+import cn.edu.zucc.takeoutfood.control.CouponHoldManager;
 import cn.edu.zucc.takeoutfood.control.SystemUserManager;
 import cn.edu.zucc.takeoutfood.model.BeanSystemUser;
 
@@ -36,7 +37,7 @@ public class FrmMain extends JFrame implements ActionListener {
     private JMenu menu_Order=new JMenu("订单管理");
     private JMenu menu_Commodity=new JMenu("商品管理");
     private JMenu menu_takeout = new JMenu("外送管理");
-   // private JMenu menu_search=new JMenu("查询");
+    private JMenu menu_search=new JMenu("查询");
     private JMenu menu_more=new JMenu("更多");
     
     private JMenuItem  menuItem_Adminisitor=new JMenuItem("管理员操作");
@@ -47,7 +48,7 @@ public class FrmMain extends JFrame implements ActionListener {
     
     private JMenuItem  menuItem_OrderManager=new JMenuItem("订单管理");
     private JMenuItem  menuItem_evaluation = new JMenuItem("评价");
-    private JMenuItem  menuItem_coupon = new JMenuItem("优惠劵明细");
+    private JMenuItem  menuItem_coupon = new JMenuItem("查看优惠劵");
     
     private JMenuItem  menuItem_CommodityManager=new JMenuItem("商品类编辑");
     private JMenuItem  menuItem_DisCountManager=new JMenuItem("优惠管理");
@@ -55,9 +56,9 @@ public class FrmMain extends JFrame implements ActionListener {
     
     private final JMenuItem menuItem_SendManager = new JMenuItem("接单管理");
 	private final JMenuItem menuItem_overdo = new JMenuItem("完成送达");
-    
+	private JMenuItem menuItem_RiderSendSearch=new JMenuItem("骑手送单情况查询");
+	
     private JMenuItem menuItem_UserOrderSearch=new JMenuItem("用户订单情况查询");
-    private JMenuItem menuItem_RiderSendSearch=new JMenuItem("骑手送单情况查询");
     private JMenuItem menuItem_CommodityStatic=new JMenuItem("商品情况查询");
     
     private JMenuItem  menuItem_modifyPwd=new JMenuItem("密码修改");
@@ -122,7 +123,7 @@ public class FrmMain extends JFrame implements ActionListener {
 			}  
 		
 		//查询框    
-		/*menubar.add(menu_search);
+		menubar.add(menu_search);
 	    menu_search.add(this.menuItem_UserOrderSearch);
 	    menuItem_UserOrderSearch.addActionListener(this);
 	    menu_search.add(this.menuItem_RiderSendSearch);
@@ -130,7 +131,7 @@ public class FrmMain extends JFrame implements ActionListener {
 	    menu_search.add(this.menuItem_CommodityStatic);
 	    menuItem_CommodityStatic.addActionListener(this);
 	    menu_search.add(this.menuItem_CommodityStatic);
-	    this.setJMenuBar(menubar);*/
+	    this.setJMenuBar(menubar);
 	    
 	    //更多
 	    menubar.add(menu_more);
@@ -184,6 +185,9 @@ public class FrmMain extends JFrame implements ActionListener {
 		else if(e.getSource()==this.menuItem_coupon) {
 			FrmCouponDetail dlg =new FrmCouponDetail(this, "优惠劵明细", true);
 			dlg.setVisible(true);
+				
+			
+			
 		}
 		
 		else if(e.getSource()==this.menuItem_CommodityManager) {
@@ -208,7 +212,7 @@ public class FrmMain extends JFrame implements ActionListener {
 			dlg.setVisible(true);
 		}
 		
-		/*else if(e.getSource()==this.menuItem_UserOrderSearch) {
+		else if(e.getSource()==this.menuItem_UserOrderSearch) {
 			
 		}
 		else if(e.getSource()==this.menuItem_RiderSendSearch) {
@@ -216,7 +220,7 @@ public class FrmMain extends JFrame implements ActionListener {
 		}
 		else if(e.getSource()==this.menuItem_CommodityStatic) {
 			
-		}*/
+		}
 		
 		else if(e.getSource()==this.menuItem_modifyPwd){
 			FrmModifyPwd dlg=new FrmModifyPwd(this,"密码修改",true);

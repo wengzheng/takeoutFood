@@ -19,24 +19,28 @@ import javax.swing.table.DefaultTableModel;
 
 import cn.edu.zucc.takeoutfood.control.CouponHoldManager;
 import cn.edu.zucc.takeoutfood.control.CouponManager;
+import cn.edu.zucc.takeoutfood.control.ShopManager;
 import cn.edu.zucc.takeoutfood.model.BeanCouponHold;
 import cn.edu.zucc.takeoutfood.util.BaseException;
+import javax.swing.JButton;
 
 public class FrmCouponDetail extends JDialog implements ActionListener {
 		private JPanel toolBar = new JPanel();
 		private Button btnAdd = new Button("查看优惠劵");
-		private Button btnDelete = new Button("使用优惠卷");
-		private Object tblTitle[]={"序号","所属商家编号","优惠价","截至时间"};
+		private JButton btnNewButton = new JButton("使用优惠劵");
+		private Object tblTitle[]={"序号","数量","优惠价","截至时间"};
 		private Object tblData[][];
 		DefaultTableModel tablmod=new DefaultTableModel();
 		private JTable userTable=new JTable(tablmod);
+		
 		private void reloadUserTable(){
 			try {
+				
 				List<BeanCouponHold> users=(new CouponHoldManager()).loadMyComoditys(false);
 				tblData =new Object[users.size()][4];
 				for(int i=0;i<users.size();i++){
-					tblData[i][0]=users.get(i).getCouponID();
-					tblData[i][0]=users.get(i).getShopID();
+					tblData[i][0]=users.get(i).getIncouponID();
+					tblData[i][1]=users.get(i).getCouponNumber();
 					tblData[i][2]=users.get(i).getCoupondiscount();
 					tblData[i][3]=users.get(i).getCdeadline();
 
@@ -52,8 +56,9 @@ public class FrmCouponDetail extends JDialog implements ActionListener {
 			super(f, s, b);
 			toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
 			toolBar.add(btnAdd);
-			toolBar.add(this.btnDelete);
 			this.getContentPane().add(toolBar, BorderLayout.NORTH);
+			
+			
 			//提取现有数据
 			this.reloadUserTable();
 			this.getContentPane().add(new JScrollPane(this.userTable), BorderLayout.CENTER);
@@ -67,36 +72,61 @@ public class FrmCouponDetail extends JDialog implements ActionListener {
 
 			this.validate();
 			this.btnAdd.addActionListener(this);
-			this.btnDelete.addActionListener(this);
 			this.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent e) {
 				}
 			});
 		}
 
+		public FrmCouponDetail(FrmOrderManager fo, String s, boolean b) {
+			super(fo, s, b);
+			toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
+			toolBar.add(btnNewButton);
+			this.getContentPane().add(toolBar, BorderLayout.NORTH);
+			
+			
+			//提取现有数据
+			this.reloadUserTable();
+			this.getContentPane().add(new JScrollPane(this.userTable), BorderLayout.CENTER);
+			
+			// 屏幕居中显示
+			this.setSize(800, 600);
+			double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+			double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+			this.setLocation((int) (width - this.getWidth()) / 2,
+					(int) (height - this.getHeight()) / 2);
+
+			this.validate();
+			this.btnNewButton.addActionListener(this);
+			this.addWindowListener(new WindowAdapter() {
+				public void windowClosing(WindowEvent e) {
+				}
+			});
+		}
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(e.getSource()==this.btnAdd){
-				FrmCouponManager_AddCoupon dlg=new FrmCouponManager_AddCoupon(this,"添加优惠券",true);
-				dlg.setVisible(true);
-				if(dlg.getcoupon()!=null){//刷新表格
-					this.reloadUserTable();
+			if(e.getSource()==this.btnAdd) {
+				try {
+					(new CouponHoldManager()).addCouponHold();
+				} catch (BaseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
+				this.reloadUserTable();
 			}
-			
-			
-			else if(e.getSource()==this.btnDelete){
+			else if(e.getSource()==this.btnNewButton){
 				int i=this.userTable.getSelectedRow();
 				if(i<0) {
-					JOptionPane.showMessageDialog(null,  "请选择优惠券","提示",JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null,  "请选择优惠劵","提示",JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				if(JOptionPane.showConfirmDialog(this,"确定使用优惠券吗？","确认",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
-					int comodityid=Integer.parseInt(this.tblData[i][0].toString());
+				if(JOptionPane.showConfirmDialog(this,"确定吗？","确认",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+					int Incouponid=Integer.parseInt(this.tblData[i][0].toString());
+					int num=Integer.parseInt(this.tblData[i][1].toString());
+					double dis=Double.parseDouble(this.tblData[i][2].toString());
 					try {
-						(new CouponManager()).deleteComodity(comodityid);
-						
-						this.reloadUserTable();
+						(new CouponHoldManager()).deleteCoupon(Incouponid,num,dis);
+						JOptionPane.showMessageDialog(null,  "该优惠卷已完成使用","提示",JOptionPane.INFORMATION_MESSAGE);
 					} catch (BaseException e1) {
 						JOptionPane.showMessageDialog(null, e1.getMessage(),"错误",JOptionPane.ERROR_MESSAGE);
 					}

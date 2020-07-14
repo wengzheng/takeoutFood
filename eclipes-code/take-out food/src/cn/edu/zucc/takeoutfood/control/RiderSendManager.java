@@ -22,7 +22,7 @@ public class RiderSendManager {
 		List<BeanRiderSend> result=new ArrayList<BeanRiderSend>();
 		try {
 			conn=DBUtil.getConnection();
-			String sql="select sendID,orderID,riderID,sendtime from ridesends where sendID="+SystemUserManager.currentUser.getSystemNUM();
+			String sql="select sendID,orderID,riderID,sendtime,income from ridesends where  sendID="+SystemUserManager.currentUser.getSystemNUM();
 			java.sql.Statement st=conn.createStatement();
 			java.sql.ResultSet rs=st.executeQuery(sql);
 			while(rs.next()) {
@@ -31,6 +31,7 @@ public class RiderSendManager {
 				ba.setOrderID(rs.getInt(2));
 				ba.setRiderID(rs.getInt(3));
 				ba.setSendtime(rs.getTimestamp(4));
+				ba.setIncome(rs.getDouble(5));
 				result.add(ba);
 			}
 			rs.close();
@@ -56,6 +57,11 @@ public class RiderSendManager {
 		Connection conn=null;
 		try {
 			conn=DBUtil.getConnection();
+			String sql0="select * from orders where requiretime>NOW() and orderID="+orderid;
+			java.sql.Statement st0=conn.createStatement();
+			java.sql.ResultSet rs0=st0.executeQuery(sql0);
+			if(!rs0.next())
+				throw new BusinessException("该订单已失效");
 			String sql="select max(sendID) sendtime from ridesends ";
 			java.sql.Statement st=conn.createStatement();
 			java.sql.ResultSet rs=st.executeQuery(sql);
@@ -119,7 +125,9 @@ public class RiderSendManager {
 			else
 				throw new BusinessException("无该底单");
 			
-			sql="select count(*) from ridesends where riderID="+SystemUserManager.currentUser.getSystemNUM();
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			sql="select count(*) from ridesends where TIMESTAMPDIFF(MONTH,sendtime,NOW())=0 and riderID="+SystemUserManager.currentUser.getSystemNUM();
 			pst=conn.prepareStatement(sql);
 			rs=pst.executeQuery();
 			int n=0;
@@ -149,7 +157,7 @@ public class RiderSendManager {
 			
 			sql="update orders set orderstate=? where orderID="+id;
 			pst=conn.prepareStatement(sql);
-			pst.setString(1, new String("Received Order"));
+			pst.setString(1, new String("Delivered"));
 			pst.execute();
 			pst.close();
 		} catch (SQLException e) {

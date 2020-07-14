@@ -27,18 +27,19 @@ public class FrmCouponManager extends JDialog implements ActionListener {
 	private JPanel toolBar = new JPanel();
 	private Button btnAdd = new Button("添加优惠券");
 	private Button btnDelete = new Button("删除优惠券");
-	private Object tblTitle[]={"序号","集单要求数","结束日期"};
+	private Object tblTitle[]={"序号","集单要求数","优惠金额","结束日期"};
 	private Object tblData[][];
 	DefaultTableModel tablmod=new DefaultTableModel();
 	private JTable userTable=new JTable(tablmod);
 	private void reloadUserTable(){
 		try {
 			List<BeanCoupon> users=(new CouponManager()).loadAllComoditys(false);
-			tblData =new Object[users.size()][3];
+			tblData =new Object[users.size()][4];
 			for(int i=0;i<users.size();i++){
 				tblData[i][0]=users.get(i).getCouponNUM();
 				tblData[i][1]=users.get(i).getRequarrenum();
-				tblData[i][2]=users.get(i).getC_endtime();
+				tblData[i][2]=users.get(i).getC_discount();
+				tblData[i][3]=users.get(i).getC_endtime();
 			}
 			tablmod.setDataVector(tblData,tblTitle);
 			this.userTable.validate();

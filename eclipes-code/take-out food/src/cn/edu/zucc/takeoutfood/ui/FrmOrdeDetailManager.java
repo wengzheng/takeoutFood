@@ -18,6 +18,8 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import cn.edu.zucc.takeoutfood.control.ComodityManager;
+import cn.edu.zucc.takeoutfood.control.CouponHoldManager;
+import cn.edu.zucc.takeoutfood.control.GiveCouponManager;
 import cn.edu.zucc.takeoutfood.control.OrderManager;
 import cn.edu.zucc.takeoutfood.model.BeanComodity;
 import cn.edu.zucc.takeoutfood.util.BaseException;

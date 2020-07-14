@@ -23,6 +23,7 @@ import cn.edu.zucc.takeoutfood.util.DbException;
 
 public class OrderManager {
 	public static int orderid=0;
+	public static int fullreduceplanID=0;
 	public List<BeanOrder> loadAllOrders(boolean b) throws BaseException{
 		Connection conn=null;
 		List<BeanOrder> result =new ArrayList<BeanOrder>();
@@ -65,9 +66,16 @@ public class OrderManager {
 		Connection conn=null;
 		try {
 			conn=DBUtil.getConnection();
-			String sql1="SELECT MAX(orderID) FROM orders ";
-			java.sql.PreparedStatement pst=conn.prepareStatement(sql1);
+			String sql="select commoditynum from comoditytype where commoditytypeID="+FrmComodityTypeManager.comoditytypeid;
+			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
 			java.sql.ResultSet rs=pst.executeQuery();
+			if(rs.next()) {
+				if(rs.getInt(1)==0)
+					throw new BusinessException("该商品类无可购商品");
+			}
+			String sql1="SELECT MAX(orderID) FROM orders ";
+			pst=conn.prepareStatement(sql1);
+			rs=pst.executeQuery();
 			if(rs.next()) {
 				order.setOrderID(rs.getInt(1)+1);
 			}
@@ -87,6 +95,7 @@ public class OrderManager {
 			pst.setString(5, new String("Not Received Order"));
 			pst.execute();
 			pst.close();
+			
 		}catch (SQLException e) {
 			e.printStackTrace();
 			throw new DbException(e);
@@ -106,39 +115,48 @@ public class OrderManager {
 		Connection conn=null;
 		try {
 			conn=DBUtil.getConnection();
-			//条件
-			String sql="select * from orders WHERE orderID=?";
+			//约束
+			String sql1="select * from ridesends where orderID="+Orderid;
+			java.sql.PreparedStatement pst1=conn.prepareStatement(sql1);
+			java.sql.ResultSet rs1=pst1.executeQuery();
+			if(rs1.next()) 
+				throw new BusinessException("骑手已接单，不能删除！");
+			
+			//前提
+			String sql="select shopID from orders WHERE orderID=?";
 			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
 			pst.setInt(1, Orderid);
 			java.sql.ResultSet rs=pst.executeQuery();
+			int sid=0;
 			if(rs.next()) {
+				sid=rs.getInt(1);
 			}else {
 				throw new BusinessException("无该订单 ");}			
 			rs.close();
 			pst.close();
-			//删除
+			
+			//修改集单送券表
+			sql="UPDATE givecoupon SET numnowing=numnowing-1 WHERE shopID=? and userID=?";
+			pst=conn.prepareStatement(sql);
+			pst.setInt(1,sid);
+			pst.setInt(2,SystemUserManager.currentUser.getSystemNUM());
+			pst.execute();
+			pst.close();
+			
+			//删除相关orderdetail
 			sql="delete from orderdetail where orderID=?";
 			pst=conn.prepareStatement(sql);
 			pst.setInt(1, Orderid);
 			pst.execute();	
-			rs.close();
-			pst.close();
+			pst.close();	
 			
 			//删除指定order
 			sql="delete from orders where orderID=?";
 			pst=conn.prepareStatement(sql);
 			pst.setInt(1, Orderid);
 			pst.execute();	
-			rs.close();
-			pst.close();
+			pst.close();			
 			
-			//删除地址表相关信息
-			sql="delete from address where userID=?";
-			pst=conn.prepareStatement(sql);
-			pst.setInt(1,SystemUserManager.currentUser.getSystemNUM());
-			pst.execute();
-			rs.close();
-			pst.close();
 		}catch(SQLException ex) {
 			ex.printStackTrace();
 			throw new DbException(ex);
@@ -202,12 +220,33 @@ public class OrderManager {
 			pst.setInt(2, this.orderid);
 			pst.execute();
 			pst.close();
-			
-			String sql6="UPDATE orders SET settlementamount=originalamount  WHERE orderID=?";
-			pst=conn.prepareStatement(sql6);
+			sql4="UPDATE orders SET settlementamount=originalamount  WHERE orderID=?";
+			pst=conn.prepareStatement(sql4);
 			pst.setInt(1, this.orderid);
 			pst.execute();
 			pst.close();
+			
+			//满减：
+			double discount=0;
+			String sql5="select fullreductionplan.fullreduceplanID, max(fullreductionplan.cdiscount) from fullreductionplan,orders \r\n" + 
+					"where  fullreductionplan.fullreduceprice<orders.originalamount and orders.orderID=" +this.orderid;
+			pst=conn.prepareStatement(sql5);
+			rs=pst.executeQuery();
+			if(rs.next()) {
+				this.fullreduceplanID=rs.getInt(1);
+				discount=rs.getInt(2);
+				System.out.println("discount:"+discount);//--------------------
+				String sql6="UPDATE orders SET settlementamount=originalamount-? , fullreduceplanID=? WHERE orderID=?";
+				pst=conn.prepareStatement(sql6);
+				pst.setDouble(1,discount);
+				pst.setInt(2, fullreduceplanID);
+				pst.setInt(3, this.orderid);
+				pst.execute();
+				pst.close();
+			} 
+				
+			
+			
 		}catch(SQLException ex) {
 			ex.printStackTrace();
 			throw new DbException(ex);
